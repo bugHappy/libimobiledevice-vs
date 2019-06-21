@@ -18,9 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libplist.vcxproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libplist\tools\plistutil.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85BB4A0B-C219-42A5-BDA1-79CF05B5A5A1}</ProjectGuid>
-    <RootNamespace>idevicerestore</RootNamespace>
+    <ProjectGuid>{8A0C3E13-8F0C-44AC-BE42-B6FBACC8A841}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>plistutil</RootNamespace>
     <WindowsTargetPlatformVersion>10</WindowsTargetPlatformVersion>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
@@ -28,24 +35,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,32 +74,49 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>$(ProjectDir)\polyfill\;$(ProjectDir)\libplist\include\;$(ProjectDir)\libusbmuxd\include\;$(ProjectDir)\libimobiledevice\include\;$(ProjectDir)\libirecovery\include\;$(ProjectDir)idevicerestore\src;$(ProjectDir)idevicerestore\compat;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>HAVE_CONFIG_H;_MBCS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;HAVE_REALPATH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>libplist\include;libplist\libcnary\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Ws2_32.lib;libcurl_imp.lib;plist.lib;imobiledevice.lib;irecovery.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -99,11 +124,14 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -112,76 +140,15 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="polyfill\libgen.c" />
-    <ClCompile Include="idevicerestore\src\asr.c" />
-    <ClCompile Include="idevicerestore\src\common.c" />
-    <ClCompile Include="idevicerestore\src\dfu.c" />
-    <ClCompile Include="idevicerestore\src\download.c" />
-    <ClCompile Include="idevicerestore\src\fdr.c" />
-    <ClCompile Include="idevicerestore\src\fls.c" />
-    <ClCompile Include="idevicerestore\src\idevicerestore.c" />
-    <ClCompile Include="idevicerestore\src\img3.c" />
-    <ClCompile Include="idevicerestore\src\img4.c" />
-    <ClCompile Include="idevicerestore\src\ipsw.c" />
-    <ClCompile Include="idevicerestore\src\jsmn.c" />
-    <ClCompile Include="idevicerestore\src\json_plist.c" />
-    <ClCompile Include="idevicerestore\src\limera1n.c" />
-    <ClCompile Include="idevicerestore\src\locking.c" />
-    <ClCompile Include="idevicerestore\src\mbn.c" />
-    <ClCompile Include="idevicerestore\src\normal.c" />
-    <ClCompile Include="idevicerestore\src\recovery.c" />
-    <ClCompile Include="idevicerestore\src\restore.c" />
-    <ClCompile Include="idevicerestore\src\socket.c" />
-    <ClCompile Include="idevicerestore\src\thread.c" />
-    <ClCompile Include="idevicerestore\src\tss.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="idevicerestore\compat\libgen.h" />
-    <ClInclude Include="idevicerestore\src\asr.h" />
-    <ClInclude Include="idevicerestore\src\common.h" />
-    <ClInclude Include="idevicerestore\src\dfu.h" />
-    <ClInclude Include="idevicerestore\src\download.h" />
-    <ClInclude Include="idevicerestore\src\endianness.h" />
-    <ClInclude Include="idevicerestore\src\fdr.h" />
-    <ClInclude Include="idevicerestore\src\fls.h" />
-    <ClInclude Include="idevicerestore\src\idevicerestore.h" />
-    <ClInclude Include="idevicerestore\src\img3.h" />
-    <ClInclude Include="idevicerestore\src\img4.h" />
-    <ClInclude Include="idevicerestore\src\ipsw.h" />
-    <ClInclude Include="idevicerestore\src\jsmn.h" />
-    <ClInclude Include="idevicerestore\src\json_plist.h" />
-    <ClInclude Include="idevicerestore\src\limera1n.h" />
-    <ClInclude Include="idevicerestore\src\limera1n_payload.h" />
-    <ClInclude Include="idevicerestore\src\locking.h" />
-    <ClInclude Include="idevicerestore\src\mbn.h" />
-    <ClInclude Include="idevicerestore\src\msc_compat.h" />
-    <ClInclude Include="idevicerestore\src\normal.h" />
-    <ClInclude Include="idevicerestore\src\recovery.h" />
-    <ClInclude Include="idevicerestore\src\restore.h" />
-    <ClInclude Include="idevicerestore\src\socket.h" />
-    <ClInclude Include="idevicerestore\src\thread.h" />
-    <ClInclude Include="idevicerestore\src\tss.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="imobiledevice.vcxproj">
-      <Project>{ee16e7f2-ac27-4e30-ab22-b02a9c2380b4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="libirecovery.vcxproj">
-      <Project>{1f5b7a30-b170-4d4c-89f8-33e4a24cf9ce}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
